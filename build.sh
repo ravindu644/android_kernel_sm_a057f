@@ -54,11 +54,21 @@ export KBUILD_EXT_MODULES="../vendor/qcom/opensource/mm-drivers/msm_ext_display 
   ../vendor/qcom/opensource/camera-kernel \
   "
 
+# Run menuconfig only if you want to.
+# It's better to use MAKE_MENUCONFIG=0 when everything is already properly enabled, disabled, or configured.
+export MAKE_MENUCONFIG=0
+
+HERMETIC_VALUE=1
+if [ "$MAKE_MENUCONFIG" = "1" ]; then
+    HERMETIC_VALUE=0
+fi
+
 # custom build options
 export GKI_BUILDSCRIPT="./kernel_platform/build/android/prepare_vendor.sh"
 export BUILD_OPTIONS=(
     RECOMPILE_KERNEL=1
     SKIP_MRPROPER=1
+    HERMETIC_TOOLCHAIN=$HERMETIC_VALUE
 )
 
 #3. build kernel

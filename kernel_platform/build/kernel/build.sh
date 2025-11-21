@@ -857,6 +857,10 @@ fi
 echo "========================================================"
 echo " Building kernel"
 
+if [ "$MAKE_MENUCONFIG" = "1" ]; then
+  (cd ${OUT_DIR} && make O=${OUT_DIR} ${TOOL_ARGS} "${MAKE_ARGS[@]}" menuconfig || true)
+fi
+
 set -x
 (cd ${OUT_DIR} && make O=${OUT_DIR} ${TOOL_ARGS} "${MAKE_ARGS[@]}" ${MAKE_GOALS})
 set +x
