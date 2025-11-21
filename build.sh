@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export WDIR="$(dirname $(readlink -f $0))" && cd "$WDIR"
+export MERGE_CONFIG="${WDIR}/kernel_platform/common/scripts/kconfig/merge_config.sh"
 
 # Download and install Toolchain
 if [ ! -d "${WDIR}/kernel_platform/prebuilts" ]; then
