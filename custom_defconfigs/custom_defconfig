@@ -1,3 +1,6 @@
 #SELinux Always Permissive
 CONFIG_SECURITY_SELINUX_ALWAYS_PERMISSIVE=y
 CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE=n
+
+# Kernel CMDLINE for touch
+CONFIG_CMDLINE="stack_depot_disable=on kasan.stacktrace=off kvm-arm.mode=protected cgroup_disable=pressure hx83112f.tpsensor=HIMAX_TXD_HX83112F ilitek.tpsensor=ILITEK_TMB_ILI7807S"
