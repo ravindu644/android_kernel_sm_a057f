@@ -5,7 +5,7 @@ git submodule update --init --recursive
 export WDIR="$(dirname $(readlink -f $0))" && cd "$WDIR"
 export MERGE_CONFIG="${WDIR}/kernel_platform/common/scripts/kconfig/merge_config.sh"
 export PKG_VENDOR_BOOT="${WDIR}/LKM_Tools/02.prepare_vendor_boot_modules.sh"
-export PKG_HIMAX_MODULE="${WDIR}/LKM_Tools/04.prepare_only_nethunter_modules.sh"
+export PKG_TOUCH_MODULE_SCRIPT="${WDIR}/LKM_Tools/04.prepare_only_nethunter_modules.sh"
 
 rm -rf "${WDIR}/dist" \
     && rm -rf "${WDIR}/out" \
@@ -125,28 +125,30 @@ package_vendor_boot_modules(){
         ${WDIR}/dist/built_vendor_boot_modules
 } && package_vendor_boot_modules || exit 1
 
-package_himax_modules(){
+package_touch_modules(){
 
-    mkdir -p ${WDIR}/dist/built_himax_modules/organized_output
+    mkdir -p ${WDIR}/dist/built_touch_modules/organized_output
 
-    if [ -f ${OUT_DIR}/dist/hx83112f.ko ]; then
-        cp ${OUT_DIR}/dist/hx83112f.ko ${WDIR}/dist/built_himax_modules/
-    else
-        echo -e "[-] Error: hx83112f.ko not found\n"
-        exit 1
-    fi
+    for i in icnl9922c.ko hx83112f.ko ilitek.ko goodix_ts.ko; do
+        if [ -f ${OUT_DIR}/dist/${i} ]; then
+            cp ${OUT_DIR}/dist/${i} ${WDIR}/dist/built_touch_modules/
+        else
+            echo -e "[-] Error: ${i} not found\n"
+            exit 1
+        fi
+    done
 
-    echo -e "[+] Packaging himax modules...\n"
+    echo -e "[+] Packaging touch modules...\n"
 
     # non-interactive mode
     # ./04.prepare_only_nethunter_modules.sh <nh_modules_dir> <staging_dir> <vendor_boot_list> <system_map> <output_dir> [strip_tool]
-    ${PKG_HIMAX_MODULE} \
-        ${WDIR}/dist/built_himax_modules \
+    ${PKG_TOUCH_MODULE_SCRIPT} \
+        ${WDIR}/dist/built_touch_modules \
         ${OUT_DIR}/staging \
         ${WDIR}/prebuilts_a05s/vendor_boot/modules_list.txt \
         ${OUT_DIR}/dist/System.map \
-        ${WDIR}/dist/built_himax_modules/organized_output
-} && package_himax_modules || exit 1
+        ${WDIR}/dist/built_touch_modules/organized_output
+} && package_touch_modules || exit 1
 
 zip_dist_files(){
     echo -e "[+] Zipping dist files...\n"
