@@ -3,7 +3,7 @@
 export WDIR="$(dirname $(readlink -f $0))" && cd "$WDIR"
 export MERGE_CONFIG="${WDIR}/kernel_platform/common/scripts/kconfig/merge_config.sh"
 
-mkdir -p "${WDIR}/dist" && rm -rf "${WDIR}/dist/*"
+mkdir -p "${WDIR}/dist" && rm -rf "${WDIR}/dist/*" && rm -rf "${WDIR}/out"
 
 # Download and install Toolchain
 if [ ! -d "${WDIR}/kernel_platform/prebuilts" ]; then
@@ -76,7 +76,7 @@ fi
 export GKI_BUILDSCRIPT="./kernel_platform/build/android/prepare_vendor.sh"
 export BUILD_OPTIONS=(
     RECOMPILE_KERNEL=1
-    SKIP_MRPROPER=1
+    SKIP_MRPROPER=0
     HERMETIC_TOOLCHAIN=$HERMETIC_VALUE
     KMI_SYMBOL_LIST_STRICT_MODE=0
     ABI_DEFINITION=""
