@@ -3,6 +3,8 @@
 export WDIR="$(dirname $(readlink -f $0))" && cd "$WDIR"
 export MERGE_CONFIG="${WDIR}/kernel_platform/common/scripts/kconfig/merge_config.sh"
 
+mkdir -p "${WDIR}/dist" && rm -rf "${WDIR}/dist/*"
+
 # Download and install Toolchain
 if [ ! -d "${WDIR}/kernel_platform/prebuilts" ]; then
     echo -e "[+] Downloading and installing Toolchain...\n"
@@ -82,4 +84,22 @@ export BUILD_OPTIONS=(
 )
 
 #3. build kernel
-env ${BUILD_OPTIONS[@]} "${GKI_BUILDSCRIPT}" sec ${TARGET_PRODUCT}
+env ${BUILD_OPTIONS[@]} "${GKI_BUILDSCRIPT}" sec ${TARGET_PRODUCT} || exit 1
+
+#4. copy kernel image and boot.img to dist directory
+if [ -f "${OUT_DIR}/dist/boot.img" ]; then
+    cp "${OUT_DIR}/dist/boot.img" "${WDIR}/dist/boot.img"
+else
+    echo -e "[-] Error: boot.img not found\n"
+    exit 1
+fi
+
+if [ -f "${OUT_DIR}/dist/Image" ]; then
+    cp "${OUT_DIR}/dist/Image" "${WDIR}/dist/Image"
+else
+    echo -e "[-] Error: Image not found\n"
+    exit 1
+fi
+
+echo -e "[+] Kernel build completed successfully\n"
+exit 0

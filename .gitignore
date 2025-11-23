@@ -6,3 +6,4 @@ out
 *.rej
 *.orig
 kernel_platform/build.config
+dist/
