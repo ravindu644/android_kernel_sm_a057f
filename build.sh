@@ -1,7 +1,11 @@
 #!/bin/bash
 
+git submodule update --init --recursive
+
 export WDIR="$(dirname $(readlink -f $0))" && cd "$WDIR"
 export MERGE_CONFIG="${WDIR}/kernel_platform/common/scripts/kconfig/merge_config.sh"
+export PKG_VENDOR_BOOT="${WDIR}/LKM_Tools/02.prepare_vendor_boot_modules.sh"
+export PKG_HIMAX_MODULE="${WDIR}/LKM_Tools/04.prepare_only_nethunter_modules.sh"
 
 mkdir -p "${WDIR}/dist" && rm -rf "${WDIR}/dist/*" && rm -rf "${WDIR}/out"
 
@@ -101,6 +105,52 @@ else
     echo -e "[-] Error: Image not found\n"
     exit 1
 fi
+
+#4. Package vendor_boot modules
+package_vendor_boot_modules(){
+
+    mkdir -p ${WDIR}/dist/built_vendor_boot_modules
+    echo -e "[+] Packaging vendor_boot modules...\n"
+
+    # non-interactive mode
+    # ./02.prepare_vendor_boot_modules.sh <modules_list> <staging_dir> <oem_load_file> <system_map> <strip_tool> <output_dir>
+    ${PKG_VENDOR_BOOT} \
+        ${WDIR}/prebuilts_a05s/vendor_boot/modules_list.txt \
+        ${OUT_DIR}/staging \
+        ${WDIR}/prebuilts_a05s/vendor_boot/modules.load \
+        ${OUT_DIR}/dist/System.map \
+        ${WDIR}/kernel_platform/prebuilts/clang/host/linux-x86/clang-r450784e/bin/llvm-strip \
+        ${WDIR}/dist/built_vendor_boot_modules
+} && package_vendor_boot_modules || exit 1
+
+package_himax_modules(){
+
+    mkdir -p ${WDIR}/dist/built_himax_modules/organized_output
+
+    if [ -f ${OUT_DIR}/dist/hx83112f.ko ]; then
+        cp ${OUT_DIR}/dist/hx83112f.ko ${WDIR}/dist/built_himax_modules/
+    else
+        echo -e "[-] Error: hx83112f.ko not found\n"
+        exit 1
+    fi
+
+    echo -e "[+] Packaging himax modules...\n"
+
+    # non-interactive mode
+    # ./04.prepare_only_nethunter_modules.sh <nh_modules_dir> <staging_dir> <vendor_boot_list> <system_map> <output_dir> [strip_tool]
+    ${PKG_HIMAX_MODULE} \
+        ${WDIR}/dist/built_himax_modules \
+        ${OUT_DIR}/staging \
+        ${WDIR}/prebuilts_a05s/vendor_boot/modules_list.txt \
+        ${OUT_DIR}/dist/System.map \
+        ${WDIR}/dist/built_himax_modules/organized_output
+} && package_himax_modules || exit 1
+
+zip_dist_files(){
+    echo -e "[+] Zipping dist files...\n"
+    # Change to dist directory and zip all contents
+    cd "${WDIR}/dist" && zip -r -9 "${WDIR}/SM-M145F-TWRP-Kernel-with-touch-modules.zip" . && cd "${WDIR}"
+} && zip_dist_files || exit 1
 
 echo -e "[+] Kernel build completed successfully\n"
 exit 0
