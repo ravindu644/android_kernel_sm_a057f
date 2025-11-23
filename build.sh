@@ -78,6 +78,7 @@ export BUILD_OPTIONS=(
     HERMETIC_TOOLCHAIN=$HERMETIC_VALUE
     KMI_SYMBOL_LIST_STRICT_MODE=0
     ABI_DEFINITION=""
+    LTO="thin"
 )
 
 #3. build kernel
