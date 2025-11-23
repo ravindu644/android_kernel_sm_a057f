@@ -54,5 +54,12 @@ export KBUILD_EXT_MODULES="../vendor/qcom/opensource/mm-drivers/msm_ext_display 
   ../vendor/qcom/opensource/camera-kernel \
   "
 
+# custom build options
+export GKI_BUILDSCRIPT="./kernel_platform/build/android/prepare_vendor.sh"
+export BUILD_OPTIONS=(
+    RECOMPILE_KERNEL=1
+    SKIP_MRPROPER=1
+)
+
 #3. build kernel
-RECOMPILE_KERNEL=1 ./kernel_platform/build/android/prepare_vendor.sh sec ${TARGET_PRODUCT}
+env ${BUILD_OPTIONS[@]} "${GKI_BUILDSCRIPT}" sec ${TARGET_PRODUCT}
