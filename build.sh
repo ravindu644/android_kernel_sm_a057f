@@ -7,7 +7,9 @@ export MERGE_CONFIG="${WDIR}/kernel_platform/common/scripts/kconfig/merge_config
 export PKG_VENDOR_BOOT="${WDIR}/LKM_Tools/02.prepare_vendor_boot_modules.sh"
 export PKG_HIMAX_MODULE="${WDIR}/LKM_Tools/04.prepare_only_nethunter_modules.sh"
 
-mkdir -p "${WDIR}/dist" && rm -rf "${WDIR}/dist/*" && rm -rf "${WDIR}/out"
+rm -rf "${WDIR}/dist" \
+    && rm -rf "${WDIR}/out" \
+    && mkdir -p "${WDIR}/dist"
 
 # Download and install Toolchain
 if [ ! -d "${WDIR}/kernel_platform/prebuilts" ]; then
