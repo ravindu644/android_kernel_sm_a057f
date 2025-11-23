@@ -24,15 +24,14 @@ fi
 echo -e "CONFIG_LOCALVERSION_AUTO=n\nCONFIG_LOCALVERSION=\"-ravindu644-${BUILD_KERNEL_VERSION}\"\n" > "${WDIR}/custom_defconfigs/version_defconfig"
 
 #1. target config
-BUILD_TARGET=$1
-export MODEL=$(echo $BUILD_TARGET | cut -d'_' -f1)
+export MODEL="a05s"
 export PROJECT_NAME=${MODEL}
-export REGION=$(echo $BUILD_TARGET | cut -d'_' -f2)
-export CARRIER=$(echo $BUILD_TARGET | cut -d'_' -f3)
-export TARGET_BUILD_VARIANT=$2
+export REGION="eur"
+export CARRIER="open"
+export TARGET_BUILD_VARIANT="user"
 
 #2. sm8550 common config
-CHIPSET_NAME=$3
+CHIPSET_NAME="sm6225"
 
 export ANDROID_BUILD_TOP=$(pwd)
 export TARGET_PRODUCT=gki
