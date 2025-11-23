@@ -1,0 +1,8 @@
+custom_defconfigs/version_defconfig
+device/qcom/gki-kernel/build.config
+kernel_platform/prebuilts
+out
+*.patch
+*.rej
+*.orig
+kernel_platform/build.config
