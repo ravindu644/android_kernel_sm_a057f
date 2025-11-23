@@ -167,7 +167,9 @@ function create_modules_staging() {
 
   if [[ -n "${EXT_MODULES}" ]] || [[ -n "${EXT_MODULES_MAKEFILE}" ]]; then
     mkdir -p ${dest_dir}/extra/
-    cp -r ${src_dir}/extra/* ${dest_dir}/extra/
+    if [[ -d "${src_dir}/extra" ]] && [[ -n "$(ls -A ${src_dir}/extra 2>/dev/null)" ]]; then
+      cp -r ${src_dir}/extra/* ${dest_dir}/extra/
+    fi
 
     # Check if we have modules.order files for external modules. This is
     # supported in android-mainline since 5.16 and androidX-5.15
