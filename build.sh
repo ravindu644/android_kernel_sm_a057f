@@ -53,7 +53,7 @@ export KBUILD_EXTRA_SYMBOLS="${ANDROID_BUILD_TOP}/out/vendor/qcom/opensource/mmr
 # for Audio(techpack) driver build
 export MODNAME=audio_dlkm
 
-export KBUILD_EXT_MODULES="../vendor/qcom/opensource/mm-drivers/msm_ext_display \
+export EXT_MODULES="../vendor/qcom/opensource/mm-drivers/msm_ext_display \
   ../vendor/qcom/opensource/mm-drivers/sync_fence \
   ../vendor/qcom/opensource/mm-drivers/hw_fence \
   ../vendor/qcom/opensource/mmrm-driver \
@@ -61,7 +61,8 @@ export KBUILD_EXT_MODULES="../vendor/qcom/opensource/mm-drivers/msm_ext_display 
   ../vendor/qcom/opensource/display-drivers/msm \
   ../vendor/qcom/opensource/audio-kernel \
   ../vendor/qcom/opensource/camera-kernel \
-  "
+  ../vendor/qcom/opensource/touch-drivers \
+"
 
 # Run menuconfig only if you want to.
 # It's better to use MAKE_MENUCONFIG=0 when everything is already properly enabled, disabled, or configured.
