@@ -151,11 +151,12 @@ package_touch_modules(){
     echo -e "[+] Packaging touch modules...\n"
 
     # non-interactive mode
-    # ./04.prepare_only_nethunter_modules.sh <nh_modules_dir> <staging_dir> <vendor_boot_list> <system_map> <output_dir> [strip_tool]
+    # ./04.prepare_only_nethunter_modules.sh <nh_modules_dir> <staging_dir> <vendor_boot_list> <vendor_dlkm_list> <system_map> <output_dir> [strip_tool]
     ${PKG_TOUCH_MODULE_SCRIPT} \
         ${WDIR}/dist/built_touch_modules \
         ${OUT_DIR}/staging \
         ${WDIR}/prebuilts_a05s/vendor_boot/modules_list.txt \
+        ${WDIR}/prebuilts_a05s/vendor_dlkm/modules_list.txt \
         ${OUT_DIR}/dist/System.map \
         ${WDIR}/dist/built_touch_modules/organized_output
 }
