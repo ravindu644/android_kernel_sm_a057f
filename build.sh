@@ -11,9 +11,11 @@ export PKG_TOUCH_MODULE_SCRIPT="${WDIR}/LKM_Tools/04.prepare_only_nethunter_modu
 source ${WDIR}/touch-modules.conf
 [ -z "$TWRP_EXT_MODULES" ] && echo -e "[-] Error: TWRP_EXT_MODULES is not set\n" && exit 1
 
-rm -rf "${WDIR}/dist" \
-    && rm -rf "${WDIR}/out" \
-    && mkdir -p "${WDIR}/dist"
+clean_up(){
+    rm -rf "${WDIR}/dist" \
+        && rm -rf "${WDIR}/out" \
+        && mkdir -p "${WDIR}/dist"
+}
 
 # Download and install Toolchain
 if [ ! -d "${WDIR}/kernel_platform/prebuilts" ]; then
@@ -95,22 +97,26 @@ export BUILD_OPTIONS=(
 )
 
 #3. build kernel
-env ${BUILD_OPTIONS[@]} "${GKI_BUILDSCRIPT}" sec ${TARGET_PRODUCT} || exit 1
+build_kernel(){
+    env ${BUILD_OPTIONS[@]} "${GKI_BUILDSCRIPT}" sec ${TARGET_PRODUCT} || exit 1
+}
 
 #4. copy kernel image and boot.img to dist directory
-if [ -f "${OUT_DIR}/dist/boot.img" ]; then
-    cp "${OUT_DIR}/dist/boot.img" "${WDIR}/dist/boot.img"
-else
-    echo -e "[-] Error: boot.img not found\n"
-    exit 1
-fi
+copy_stuff(){
+    if [ -f "${OUT_DIR}/dist/boot.img" ]; then
+        cp "${OUT_DIR}/dist/boot.img" "${WDIR}/dist/boot.img"
+    else
+        echo -e "[-] Error: boot.img not found\n"
+        exit 1
+    fi
 
-if [ -f "${OUT_DIR}/dist/Image" ]; then
-    cp "${OUT_DIR}/dist/Image" "${WDIR}/dist/Image"
-else
-    echo -e "[-] Error: Image not found\n"
-    exit 1
-fi
+    if [ -f "${OUT_DIR}/dist/Image" ]; then
+        cp "${OUT_DIR}/dist/Image" "${WDIR}/dist/Image"
+    else
+        echo -e "[-] Error: Image not found\n"
+        exit 1
+    fi
+}
 
 #4. Package vendor_boot modules
 package_vendor_boot_modules(){
@@ -127,7 +133,7 @@ package_vendor_boot_modules(){
         ${OUT_DIR}/dist/System.map \
         ${WDIR}/kernel_platform/prebuilts/clang/host/linux-x86/clang-r450784e/bin/llvm-strip \
         ${WDIR}/dist/built_vendor_boot_modules
-} && package_vendor_boot_modules || exit 1
+}
 
 package_touch_modules(){
 
@@ -149,16 +155,22 @@ package_touch_modules(){
     ${PKG_TOUCH_MODULE_SCRIPT} \
         ${WDIR}/dist/built_touch_modules \
         ${OUT_DIR}/staging \
-        "" \
+        ${WDIR}/prebuilts_a05s/vendor_boot/modules_list.txt \
         ${OUT_DIR}/dist/System.map \
         ${WDIR}/dist/built_touch_modules/organized_output
-} && package_touch_modules || exit 1
+}
 
 zip_dist_files(){
     echo -e "[+] Zipping dist files...\n"
     # Change to dist directory and zip all contents
     cd "${WDIR}/dist" && zip -r -9 "${WDIR}/SM-M145F-TWRP-Kernel-with-touch-modules.zip" . && cd "${WDIR}"
-} && zip_dist_files || exit 1
+}
+
+clean_up
+build_kernel
+copy_stuff
+package_vendor_boot_modules
+package_touch_modules
+zip_dist_files
 
 echo -e "[+] Kernel build completed successfully\n"
-exit 0
