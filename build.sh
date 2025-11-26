@@ -149,7 +149,7 @@ package_touch_modules(){
     ${PKG_TOUCH_MODULE_SCRIPT} \
         ${WDIR}/dist/built_touch_modules \
         ${OUT_DIR}/staging \
-        ${WDIR}/prebuilts_a05s/vendor_boot/modules_list.txt \
+        "" \
         ${OUT_DIR}/dist/System.map \
         ${WDIR}/dist/built_touch_modules/organized_output
 } && package_touch_modules || exit 1
