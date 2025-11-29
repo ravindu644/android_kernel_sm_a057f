@@ -166,7 +166,7 @@ package_touch_modules(){
 zip_dist_files(){
     echo -e "[+] Zipping dist files...\n"
     # Change to dist directory and zip all contents
-    cd "${WDIR}/dist" && zip -r -9 "${WDIR}/SM-M145F-TWRP-Kernel-with-touch-modules.zip" . && cd "${WDIR}"
+    cd "${WDIR}/dist" && zip -r -9 "${WDIR}/SM-A057FF-TWRP-Kernel-with-touch-modules.zip" . && cd "${WDIR}"
 }
 
 clean_up
